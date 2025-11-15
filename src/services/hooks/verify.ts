@@ -25,14 +25,10 @@ export function useVerify(): UseVerify {
         'Content-Type': 'application/json',
         'X-CSRF-Token': arg.csrfToken,
       },
-      body: JSON.stringify({ token: arg.token }),
     })
 
     if (!response.ok) {
-      const error = await response
-        .json()
-        .catch(() => ({ message: 'Request failed' }))
-      throw new Error(error.message || `HTTP error! status: ${response.status}`)
+      router.push('/error')
     }
 
     return response.json()
