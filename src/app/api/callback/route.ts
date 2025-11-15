@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     return createRedirectResponse('/verify', res)
   } catch (error) {
     console.error('Error in api/callback:', error)
-    return createRedirectResponse('/error', res)
+    return NextResponse.redirect(new URL('/error', process.env.BASE_URL))
   }
 }
 
@@ -27,7 +27,7 @@ function createRedirectResponse(path: string, res: NextResponse): NextResponse {
   const redirectUrl = new URL(path, process.env.BASE_URL)
   const response = NextResponse.redirect(redirectUrl)
   const cookies = res.headers.getSetCookie()
-  cookies.forEach(cookie => {
+  cookies.map(cookie => {
     response.headers.append('Set-Cookie', cookie)
   })
 

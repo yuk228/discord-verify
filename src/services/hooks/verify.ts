@@ -1,14 +1,13 @@
 'use client'
 
-import { useFormik } from 'formik'
+import { useFormik, FormikProps } from 'formik'
 import { useRouter } from 'next/navigation'
 import useSWRMutation from 'swr/mutation'
 import { useCsrfToken } from './csrf-token'
-import { useEffect } from 'react'
 import * as yup from 'yup'
 
 interface UseVerify {
-  formik: ReturnType<typeof useFormik<FormValues>>
+  formik: FormikProps<FormValues>
 }
 
 interface FormValues {
@@ -62,14 +61,6 @@ export function useVerify(): UseVerify {
       }
     },
   })
-
-  // csrfTokenが更新されたときにformikの値を更新
-  useEffect(() => {
-    if (data?.token) {
-      formik.setFieldValue('csrfToken', data.token)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.token])
 
   return { formik }
 }
