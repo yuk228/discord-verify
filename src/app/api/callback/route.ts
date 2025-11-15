@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   const res = new NextResponse()
   try {
     const session = await getIronSession<SessionData>(req, res, sessionOptions)
-    const code = new URL(req.url).searchParams.get('code')
+    const code = req.nextUrl.searchParams.get('code')
 
     const csrfToken = crypto.randomBytes(32).toString('hex')
 
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
 
     return createRedirectResponse('/verify', res)
   } catch (error) {
-    console.log('Error in api/callback:', error)
+    console.error('Error in api/callback:', error)
     return createRedirectResponse('/error', res)
   }
 }
@@ -26,12 +26,10 @@ export async function GET(req: NextRequest) {
 function createRedirectResponse(path: string, res: NextResponse): NextResponse {
   const redirectUrl = new URL(path, process.env.BASE_URL)
   const response = NextResponse.redirect(redirectUrl)
-
-  const cookie = res.headers.get('Set-Cookie')
-
-  if (cookie) {
-    response.headers.set('Set-Cookie', cookie)
-  }
+  const cookies = res.headers.getSetCookie()
+  cookies.forEach(cookie => {
+    response.headers.append('Set-Cookie', cookie)
+  })
 
   return response
 }
