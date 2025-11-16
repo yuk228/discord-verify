@@ -1,5 +1,5 @@
 import { User } from '@/entities/user'
-import { IPInfo } from '@/entities/logger'
+import { IpInfo } from '@/entities/logger'
 
 export async function getAccessToken(code: string) {
   try {
@@ -9,7 +9,7 @@ export async function getAccessToken(code: string) {
       redirect_uri: `${process.env.BASE_URL}/api/callback`,
     }).toString()
 
-    const reponse = await fetch(`https://discord.com/api/v10/oauth2/token`, {
+    const response = await fetch(`https://discord.com/api/v10/oauth2/token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -22,11 +22,11 @@ export async function getAccessToken(code: string) {
       body: body,
     })
 
-    if (!reponse.ok) {
-      throw new Error('Failed to fetch token')
+    if (!response.ok) {
+      throw new Error(`Failed to fetch token: ${response.status}`)
     }
 
-    return await reponse.json()
+    return await response.json()
   } catch (error) {
     console.log('Error in get token from discord:', error)
     throw error
@@ -35,26 +35,25 @@ export async function getAccessToken(code: string) {
 
 export async function getInfo(accessToken: string): Promise<User> {
   try {
-    const res = await fetch(`https://discord.com/api/users/@me`, {
+    const response = await fetch(`https://discord.com/api/users/@me`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     })
 
-    if (!res.ok) {
-      throw new Error(`Failed to fetch user info: ${res.status}`)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch user info: ${response.status}`)
     }
 
-    const userInfo = await res.json()
-    return userInfo
+    return await response.json()
   } catch (error) {
     console.log('Error in getInfo:', error)
     throw error
   }
 }
 
-export async function getIpInfo(ip: string): Promise<IPInfo> {
+export async function getIpInfo(ip: string): Promise<IpInfo> {
   try {
     const response = await fetch(`https://ipinfo.io/${ip}/json`)
 
@@ -62,8 +61,7 @@ export async function getIpInfo(ip: string): Promise<IPInfo> {
       throw new Error(`Failed to fetch IP info: ${response.status}`)
     }
 
-    const data = await response.json()
-    return data as IPInfo
+    return await response.json()
   } catch (error) {
     console.log('Error in getIpInfo:', error)
     throw error

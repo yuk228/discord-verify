@@ -4,7 +4,7 @@ export async function assignRole(userId: string) {
     const roleId = process.env.DISCORD_ROLE_ID
     const botToken = process.env.DISCORD_BOT_TOKEN
 
-    const res = await fetch(
+    const response = await fetch(
       `https://discord.com/api/v10/guilds/${guildId}/members/${userId}/roles/${roleId}`,
       {
         method: 'PUT',
@@ -15,8 +15,8 @@ export async function assignRole(userId: string) {
       }
     )
 
-    if (!res.ok) {
-      throw new Error('Failed to assign role')
+    if (!response.ok) {
+      throw new Error(`Failed to assign role: ${response.status}`)
     }
   } catch (error) {
     console.log('Error in assign role:', error)

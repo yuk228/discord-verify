@@ -1,11 +1,11 @@
 import { User } from './user'
 
 export interface Logger extends User {
-  ipinfo: IPInfo
+  ipinfo: IpInfo
   userAgent: string
 }
 
-export interface IPInfo {
+export interface IpInfo {
   ip: string
   city: string
   region: string
