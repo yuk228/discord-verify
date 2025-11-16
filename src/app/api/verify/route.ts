@@ -1,8 +1,12 @@
 import { logger } from '@/services/discord/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { assignRole } from '@/services/discord/assign-role'
-import { getInfo, getIpInfo } from '@/services/discord/get-info'
-import { getToken, verifyToken } from '@/services/discord/verify'
+import {
+  getInfo,
+  getIpInfo,
+  getAccessToken,
+} from '@/services/discord/get-user-info'
+import { validateToken } from '@/services/validate-turnsitle'
 import { getIronSession } from 'iron-session'
 import { sessionOptions } from '@/services/session'
 import { SessionData } from '@/entities/session'
@@ -42,10 +46,10 @@ export async function POST(req: NextRequest) {
       return BadRequest()
     }
 
-    await verifyToken(token)
-    const getTokenResult = await getToken(session.code as string)
+    await validateToken(token)
+    const getTokenResult = await getAccessToken(session.code)
     const userInfo = await getInfo(getTokenResult.access_token)
-    const ipInfo = await getIpInfo({ ip })
+    const ipInfo = await getIpInfo(ip)
     const isVpn = usingVpn(ipInfo.org)
 
     if (isVpn) {
