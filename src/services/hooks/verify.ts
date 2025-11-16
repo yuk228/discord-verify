@@ -26,11 +26,9 @@ export function useVerify(): UseVerify {
         'X-CSRF-Token': arg.csrfToken,
       },
     })
-
     if (!response.ok) {
       router.push('/error')
     }
-
     return response.json()
   }
 

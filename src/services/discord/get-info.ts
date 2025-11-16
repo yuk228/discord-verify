@@ -1,7 +1,11 @@
 import { User } from '@/entities/user'
 import { IPInfo } from '@/entities/logger'
 
-export async function getInfo(accessToken: string): Promise<User> {
+interface GetInfoProps {
+  accessToken: string
+}
+
+export async function getInfo({ accessToken }: GetInfoProps): Promise<User> {
   try {
     const res = await fetch(`https://discord.com/api/users/@me`, {
       method: 'GET',
@@ -9,6 +13,11 @@ export async function getInfo(accessToken: string): Promise<User> {
         Authorization: `Bearer ${accessToken}`,
       },
     })
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch user info: ${res.status}`)
+    }
+
     const userInfo = await res.json()
     return userInfo
   } catch (error) {
@@ -17,15 +26,13 @@ export async function getInfo(accessToken: string): Promise<User> {
   }
 }
 
-interface GetInfoProps {
+interface GetIpInfoProps {
   ip: string
 }
 
-export async function getIpInfo({ ip }: GetInfoProps): Promise<IPInfo> {
+export async function getIpInfo({ ip }: GetIpInfoProps): Promise<IPInfo> {
   try {
-    const response = await fetch(
-      `https://ipinfo.io/${ip}?token=${process.env.IPINFO_TOKEN || ''}`
-    )
+    const response = await fetch(`https://ipinfo.io/${ip}/json`)
 
     if (!response.ok) {
       throw new Error(`Failed to fetch IP info: ${response.status}`)

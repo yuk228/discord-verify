@@ -16,20 +16,11 @@ export async function GET(req: NextRequest) {
     session.csrfToken = csrfToken
     await session.save()
 
-    return createRedirectResponse('/verify', res)
+    return NextResponse.redirect(new URL('/verify', process.env.BASE_URL), {
+      headers: res.headers,
+    })
   } catch (error) {
     console.error('Error in api/callback:', error)
     return NextResponse.redirect(new URL('/error', process.env.BASE_URL))
   }
-}
-
-function createRedirectResponse(path: string, res: NextResponse): NextResponse {
-  const redirectUrl = new URL(path, process.env.BASE_URL)
-  const response = NextResponse.redirect(redirectUrl)
-  const cookies = res.headers.getSetCookie()
-  cookies.map(cookie => {
-    response.headers.append('Set-Cookie', cookie)
-  })
-
-  return response
 }
