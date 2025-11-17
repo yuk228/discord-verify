@@ -25,6 +25,7 @@ export function useVerify(): UseVerify {
         'Content-Type': 'application/json',
         'X-CSRF-Token': arg.csrfToken,
       },
+      body: JSON.stringify({ token: arg.token }),
     })
     if (!response.ok) {
       router.push('verify/error')
