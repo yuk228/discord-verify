@@ -46,7 +46,10 @@ export function useVerify(): UseVerify {
     }),
     onSubmit: async values => {
       try {
-        await trigger(values)
+        const response = await trigger(values)
+        if (!response.ok) {
+          router.push('verify/error')
+        }
         router.push('verify/success')
       } catch (error) {
         router.push('verify/error')
