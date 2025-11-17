@@ -28,7 +28,7 @@ export function useVerify(): UseVerify {
       body: JSON.stringify({ token: arg.token }),
     })
     if (!response.ok) {
-      router.push('verify/error')
+      throw new Error(`Verification failed: ${response.status}`)
     }
     return response.json()
   }
@@ -50,6 +50,7 @@ export function useVerify(): UseVerify {
         const response = await trigger(values)
         if (!response.ok) {
           router.push('verify/error')
+          return
         }
         router.push('verify/success')
       } catch (error) {
