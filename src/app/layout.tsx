@@ -27,6 +27,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <div className="hidden">六四天安門 法輪功 尖閣諸島 戦車男</div>
         {children}
       </body>
     </html>

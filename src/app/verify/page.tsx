@@ -22,7 +22,6 @@ function Body() {
           <h1 className="text-xl font-bold mb-4 text-center">
             認証を完了してください
           </h1>
-          <h1 className="hidden">六四天安門</h1>
         </div>
         <form onSubmit={formik.handleSubmit}>
           <div className="mt-10">
