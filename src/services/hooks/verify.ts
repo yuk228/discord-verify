@@ -27,7 +27,7 @@ export function useVerify(): UseVerify {
       },
     })
     if (!response.ok) {
-      router.push('/error')
+      router.push('verify/error')
     }
     return response.json()
   }
@@ -46,12 +46,10 @@ export function useVerify(): UseVerify {
     }),
     onSubmit: async values => {
       try {
-        console.log('Submitting values:', values)
         await trigger(values)
-        router.push('/success')
+        router.push('verify/success')
       } catch (error) {
-        console.error('Verify error:', error)
-        router.push('/error')
+        router.push('verify/error')
       }
     },
   })

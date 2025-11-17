@@ -3,12 +3,16 @@ import { getIronSession } from 'iron-session'
 import { sessionOptions } from '@/services/session'
 import { SessionData } from '@/entities/session'
 import crypto from 'crypto'
+import { BadRequest } from '@/services/api/response'
 
 export async function GET(req: NextRequest) {
   const res = new NextResponse()
   try {
     const session = await getIronSession<SessionData>(req, res, sessionOptions)
     const code = req.nextUrl.searchParams.get('code')
+    if (!code) {
+      BadRequest()
+    }
 
     const csrfToken = crypto.randomBytes(32).toString('hex')
 
