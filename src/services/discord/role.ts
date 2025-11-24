@@ -5,7 +5,7 @@ export async function assignRole(userId: string) {
     const botToken = process.env.DISCORD_BOT_TOKEN
 
     const response = await fetch(
-      `${process.env.DISCORD_API}/guilds/${guildId}/members/${userId}/roles/${roleId}`,
+      `https://discord.com/api/guilds/${guildId}/members/${userId}/roles/${roleId}`,
       {
         method: 'PUT',
         headers: {
