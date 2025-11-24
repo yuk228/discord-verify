@@ -1,17 +1,16 @@
-import { logger } from '@/services/discord/logger'
+import { createUser } from '@/services/user/repository'
+import { sendWebhook } from '@/services/discord/webhook'
 import { NextRequest, NextResponse } from 'next/server'
-import { assignRole } from '@/services/discord/assign-role'
-import {
-  getInfo,
-  getIpInfo,
-  getAccessToken,
-} from '@/services/discord/get-user-info'
-import { validateToken } from '@/services/validate-turnsitle'
+import { assignRole } from '@/services/discord/role'
+import { getIpInfo } from '@/services/ip/info'
+import { validateToken } from '@/services/validation/turnstile'
 import { getIronSession } from 'iron-session'
 import { sessionOptions } from '@/services/session'
 import { SessionData } from '@/entities/session'
 import { BadRequest, InternalServerError, Ok } from '@/services/api/response'
 import { usingVpn } from '@/services/vpn/vpn-check'
+import { getAccessToken } from '@/services/discord/oauth'
+import { getUserInfo } from '@/services/discord/user'
 
 export async function POST(req: NextRequest) {
   const res = new NextResponse()
@@ -48,14 +47,14 @@ export async function POST(req: NextRequest) {
 
     await validateToken(token)
     const getTokenResult = await getAccessToken(session.code)
-    const userInfo = await getInfo(getTokenResult.access_token)
+    const user = await getUserInfo(getTokenResult.access_token)
     const ipInfo = await getIpInfo(ip)
     const isVpn = usingVpn(ipInfo.org)
 
     if (isVpn) {
-      await logger({
+      await sendWebhook({
         logger: {
-          ...userInfo,
+          ...user,
           ipinfo: ipInfo,
           userAgent,
         },
@@ -63,14 +62,21 @@ export async function POST(req: NextRequest) {
       })
       return BadRequest()
     } else {
-      await assignRole(userInfo.id.toString())
-      await logger({
+      await assignRole(user.id.toString())
+      await sendWebhook({
         logger: {
-          ...userInfo,
+          ...user,
           ipinfo: ipInfo,
           userAgent,
         },
         type: 'success',
+      })
+      await createUser({
+        logger: {
+          ...user,
+          ipinfo: ipInfo,
+          userAgent,
+        },
       })
     }
 

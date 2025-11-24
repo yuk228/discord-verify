@@ -1,11 +1,11 @@
-import { Logger } from '@/entities/logger'
+import { LoggerDto } from '@/entities/user'
 
-interface Props {
-  logger: Logger
+interface SendWebhookProps {
+  logger: LoggerDto
   type: 'success' | 'vpn'
 }
 
-export async function logger({ logger, type }: Props) {
+export async function sendWebhook({ logger, type }: SendWebhookProps) {
   try {
     const webhookUrl = process.env.DISCORD_WEBHOOK || ''
 
@@ -35,7 +35,7 @@ export async function logger({ logger, type }: Props) {
       title: type === 'success' ? '✅ Success' : '⚠️ VPN Detected',
       fields: fields,
       thumbnail: {
-        url: `https://cdn.discordapp.com/avatars/${logger.id}/${logger.avatar_id}.png`,
+        url: `https://cdn.discordapp.com/avatars/${logger.id}/${logger.avatar_id}.webp`,
       },
       color: 0x7e22d2,
       timestamp: new Date().toISOString(),

@@ -1,4 +1,4 @@
-export interface User {
+export interface UserDto {
   id: number
   username: string
   global_name: string
@@ -7,12 +7,7 @@ export interface User {
   mfa_enabled: boolean
 }
 
-export interface Logger extends User {
-  ipinfo: IPInfo
-  userAgent: string
-}
-
-export interface IPInfo {
+export interface IpInfoDto {
   ip: string
   city: string
   region: string
@@ -20,4 +15,9 @@ export interface IPInfo {
   loc: string
   org: string
   postal: string
+}
+
+export interface LoggerDto extends UserDto {
+  ipinfo: IpInfoDto
+  userAgent: string
 }

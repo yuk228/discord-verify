@@ -24,3 +24,4 @@ export async function validateToken(token: string) {
     throw error
   }
 }
+
